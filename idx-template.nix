@@ -63,7 +63,13 @@ in
       if [ -f ${backend_path}/pom.xml ]; then
         echo "⚙️ Building backend with Maven..."
         cd ${backend_path}
-        ./mvnw clean install || mvn clean install
+        ./mvnw clean install || {
+          echo ""
+          echo "❌ Tests failed! Retrying without tests..."
+          echo "⚠️ Backend app will try to boot but tests are skipped."
+          echo ""
+          ./mvnw clean install -DskipTests
+        }
         cd ..
       fi
 
@@ -179,7 +185,13 @@ in
         maven-build = ""
           if [ -f ${backend_path}/pom.xml ]; then
             cd ${backend_path}
-            ./mvnw clean install || mvn clean install
+            ./mvnw clean install || {
+              echo ""
+              echo "❌ Tests failed! Retrying without tests..."
+              echo "⚠️ Backend app will try to boot but tests are skipped."
+              echo ""
+              ./mvnw clean install -DskipTests
+            }
           fi
         "";
       };

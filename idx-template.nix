@@ -1,5 +1,4 @@
 { pkgs
-, project_name ? "my-app"
 , github_url ? ""
 , frontend_path ? "frontend"
 , backend_path ? "backend"
@@ -229,6 +228,6 @@ in
 }
 EOF
 
-    echo "✅ Bootstrap complete for ${project_name}"
+    echo "✅ Bootstrap complete "
   '';
 }

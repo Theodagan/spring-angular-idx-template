@@ -1,59 +1,61 @@
 {
-  "name": "Spring Angular Starter",
-  "description": "A full-stack Spring Boot + Angular + MySQL template for Firebase Studio",
+  "name": "Spring Boot + Angular Starter",
+  "description": "Modèle Firebase Studio pour une application full-stack avec Angular en frontend et Spring Boot en backend.",
   "params": [
     {
       "id": "project_name",
-      "name": "Project Folder Name",
+      "name": "Nom du projet",
       "type": "text",
-      "default": "project",
-      "required": false
-    },
-    {
-      "id": "github_url",
-      "name": "GitHub Repo URL (optional)",
-      "type": "text",
-      "default": "",
-      "required": false
+      "default": "my-app",
+      "required": true
     },
     {
       "id": "java_version",
-      "name": "Java Version",
+      "name": "Version Java (JDK)",
       "type": "enum",
+      "default": "17",
       "options": {
         "11": "Java 11",
         "17": "Java 17",
         "21": "Java 21"
       },
-      "default": "11",
-      "required": false
+      "required": true
     },
     {
       "id": "angular_cli_version",
-      "name": "Angular CLI Version",
+      "name": "Version Angular CLI",
       "type": "enum",
-      "options": {
-        "14": "Angular 14",
-        "15": "Angular 15",
-        "16": "Angular 16",
-        "latest": "Latest"
-      },
       "default": "14",
-      "required": false
+      "options": {
+        "14": "v14",
+        "15": "v15",
+        "16": "v16"
+      },
+      "required": true
     },
     {
-      "id": "java_app_path",
-      "name": "Java App Path",
+      "id": "mysql_user",
+      "name": "Utilisateur MySQL",
       "type": "text",
-      "default": "backend",
-      "required": false
+      "default": "dev"
     },
     {
-      "id": "angular_app_path",
-      "name": "Angular App Path",
+      "id": "mysql_password",
+      "name": "Mot de passe MySQL",
       "type": "text",
-      "default": "frontend",
-      "required": false
+      "default": "password"
+    },
+    {
+      "id": "mysql_database",
+      "name": "Nom de la base de données MySQL",
+      "type": "text",
+      "default": "dev_db"
+    },
+    {
+      "id": "mysql_port",
+      "name": "Port MySQL",
+      "type": "text",
+      "default": "3306"
     }
   ]
 }

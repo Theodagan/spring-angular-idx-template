@@ -14,7 +14,7 @@ This is a reusable [Google Project IDX](https://idx.google.com/) template that s
 
 You can open this template directly in Google IDX with one click:
 
-👉 [**Launch in Google IDX**](https://idx.google.com/workspace/new?template_url=https://github.com/Theodagan/spring-angular-idx-template.git)
+👉 [**Launch in Google IDX**](https://studio.firebase.google.com/new?template=https://github.com/Theodagan/spring-angular-idx-template.git) 
 
 ---
 

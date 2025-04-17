@@ -78,7 +78,7 @@ in
       mkdir -p ${frontend_path}
       cd ${frontend_path}
       npm install @angular/cli@${angular_cli_version}
-      npx ng new . --skip-install --skip-git --defaults
+      ng new ${frontend_path} --directory . --skip-install --skip-git --defaults
       npm install
       cd ..
 

@@ -173,18 +173,13 @@ in
 
     workspace = {
       onCreate = {
-        install = ""
-          cd  ${backend_path} && mvn clean install # Build backend
-          cd .. && cd ${frontend_path} && npm install # Install frontend deps
-        "";
+        install = "
+          cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
-      runServer = ""
-            cd ${backend_path} && mvn spring-boot:run &> /dev/null &
-            cd ../${frontend_path} && ng serve 
-        "";
+        runServer = "cd ${backend_path} && mvn spring-boot:run &> /dev/null & cd ../${frontend_path} && ng serve";
       };
-      };
+    };
 
     previews = {
       enable = true;

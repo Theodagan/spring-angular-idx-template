@@ -63,12 +63,12 @@ in
       if [ -f ${backend_path}/pom.xml ]; then
         echo "⚙️ Building backend with Maven..."
         cd ${backend_path}
-        ./mvnw clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
+        mvn clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
             echo ""
             echo "❌ Tests failed! Retrying without tests..."
             echo "⚠️ Backend app will try to boot but tests are skipped."
             echo ""
-            ./mvnw clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
+            mvn clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
           }
         cd ..
       fi
@@ -104,140 +104,140 @@ in
 
       echo "🔐 Injecting database credentials into Spring Boot application.properties"
       cat <<EOF > src/main/resources/application.properties
-spring.datasource.url=jdbc:mysql://localhost:${mysql_port}/${mysql_database}
-spring.datasource.username=${mysql_user}
-spring.datasource.password=${mysql_password}
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-EOF
+        spring.datasource.url=jdbc:mysql://localhost:${mysql_port}/${mysql_database}
+        spring.datasource.username=${mysql_user}
+        spring.datasource.password=${mysql_password}
+        spring.jpa.hibernate.ddl-auto=update
+        spring.jpa.show-sql=true
+        spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+      EOF
 
-      ./mvnw clean install
+      mvn clean install
       cd ..
     fi
 
     echo "📁 Updating .gitignore"
     cat <<EOF >> .gitignore
-.idx/
-dev.nix
-idx-template.nix
-idx-template.json
-EOF
+      .idx/
+      dev.nix
+      idx-template.nix
+      idx-template.json
+    EOF
     sort -u .gitignore -o .gitignore
 
     echo "🌐 Creating Angular proxy config at .idx/proxy.conf.json"
     mkdir -p .idx
     cat <<EOF > .idx/proxy.conf.json
-{
-  "/api": {
-    "target": "http://localhost:8080",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "info"
-  }
-}
-EOF
+      {
+        "/api": {
+          "target": "http://localhost:8080",
+          "secure": false,
+          "changeOrigin": true,
+          "logLevel": "info"
+        }
+      }
+    EOF
 
     echo "🧪 Generating .idx/dev.nix with user-defined settings"
     cat <<EOF > .idx/dev.nix
-{ pkgs, config, ... }:
+      { pkgs, config, ... }:
 
-let
-  jdkPackage = pkgs.${"openjdk" + java_version};
-in
-{
-  channel = "stable-24.05";
+      let
+        jdkPackage = pkgs.${"openjdk" + java_version};
+      in
+      {
+        channel = "stable-24.05";
 
-  packages = [
-    jdkPackage
-    pkgs.nodejs_20
-    pkgs.mysql
-    pkgs.maven
-    pkgs.git
-  ];
-
-  env = {
-    JAVA_HOME = "\${jdkPackage.home}";
-    MYSQL_USER = "${mysql_user}";
-    MYSQL_PASSWORD = "${mysql_password}";
-    MYSQL_DATABASE = "${mysql_database}";
-    MYSQL_PORT = "${mysql_port}";
-  };
-
-  services.mysql.enable = true;
-
-  idx = {
-    extensions = [
-      "angular.ng-template"
-      "vscjava.vscode-java-pack"
-      "redhat.java"
-    ];
-
-    workspace = {
-      onCreate = {
-        angular-cli = "npm install @angular/cli@${angular_cli_version}";
-        npm-install = ""
-          if [ -f ${frontend_path}/package.json ]; then
-            cd ${frontend_path}
-            npm ci || npm install
-          fi
-        "";
-        maven-build = ""
-          if [ -f ${backend_path}/pom.xml ]; then
-            cd ${backend_path}
-            ./mvnw clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
-              echo ""
-              echo "❌ Tests failed! Retrying without tests..."
-              echo "⚠️ Backend app will try to boot but tests are skipped."
-              echo ""
-              ./mvnw clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
-            }
-          fi
-        "";
-      };
-
-      onStart = {
-        backend-run = ""
-          if [ -f ${backend_path}/pom.xml ]; then
-            cd ${backend_path}
-            ./mvnw spring-boot:run || mvn spring-boot:run &
-          fi
-        "";
-        frontend-run = ""
-          if [ -f ${frontend_path}/package.json ]; then
-            cd ${frontend_path}
-            ng serve --proxy-config .idx/proxy.conf.json --port \$PORT --host 0.0.0.0 --disable-host-check &
-          fi
-        "";
-      };
-
-      default.openFiles = [
-        "frontend/src/app/app.component.ts"
-        "backend/src/main/java/com/example/demo/DemoApplication.java"
-        "backend/src/main/resources/application.properties"
-      ];
-    };
-
-    previews = {
-      enable = true;
-      previews.web = {
-        manager = "web";
-        command = [
-          "ng"
-          "serve"
-          "--proxy-config"
-          ".idx/proxy.conf.json"
-          "--port"
-          "\$PORT"
-          "--host"
-          "0.0.0.0"
-          "--disable-host-check"
+        packages = [
+          jdkPackage
+          pkgs.nodejs_20
+          pkgs.mysql
+          pkgs.maven
+          pkgs.git
         ];
-      };
-    };
-  };
-}
-EOF
+
+        env = {
+          JAVA_HOME = "\${jdkPackage.home}";
+          MYSQL_USER = "${mysql_user}";
+          MYSQL_PASSWORD = "${mysql_password}";
+          MYSQL_DATABASE = "${mysql_database}";
+          MYSQL_PORT = "${mysql_port}";
+        };
+
+        services.mysql.enable = true;
+
+        idx = {
+          extensions = [
+            "angular.ng-template"
+            "vscjava.vscode-java-pack"
+            "redhat.java"
+          ];
+
+          workspace = {
+            onCreate = {
+              angular-cli = "npm install @angular/cli@${angular_cli_version}";
+              npm-install = ""
+                if [ -f ${frontend_path}/package.json ]; then
+                  cd ${frontend_path}
+                  npm ci || npm install
+                fi
+              "";
+              maven-build = ""
+                if [ -f ${backend_path}/pom.xml ]; then
+                  cd ${backend_path}
+                  mvn clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
+                    echo ""
+                    echo "❌ Tests failed! Retrying without tests..."
+                    echo "⚠️ Backend app will try to boot but tests are skipped."
+                    echo ""
+                    mvn clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
+                  }
+                fi
+              "";
+            };
+
+            onStart = {
+              backend-run = ""
+                if [ -f ${backend_path}/pom.xml ]; then
+                  cd ${backend_path}
+                  mvn spring-boot:run || mvn spring-boot:run &
+                fi
+              "";
+              frontend-run = ""
+                if [ -f ${frontend_path}/package.json ]; then
+                  cd ${frontend_path}
+                  ng serve --proxy-config .idx/proxy.conf.json --port \$PORT --host 0.0.0.0 --disable-host-check &
+                fi
+              "";
+            };
+
+            default.openFiles = [
+              "frontend/src/app/app.component.ts"
+              "backend/src/main/java/com/example/demo/DemoApplication.java"
+              "backend/src/main/resources/application.properties"
+            ];
+          };
+
+          previews = {
+            enable = true;
+            previews.web = {
+              manager = "web";
+              command = [
+                "ng"
+                "serve"
+                "--proxy-config"
+                ".idx/proxy.conf.json"
+                "--port"
+                "\$PORT"
+                "--host"
+                "0.0.0.0"
+                "--disable-host-check"
+              ];
+            };
+          };
+        };
+      }
+    EOF
 
     echo "✅ Bootstrap complete "
   '';

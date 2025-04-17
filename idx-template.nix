@@ -6,12 +6,14 @@
 
     if [ "${inputs.github_url}" != "" ] && [ "${inputs.github_url}" != "$DEFAULT_REPO" ]; then
       echo "🔧 Cloning repository from: ${inputs.github_url}"
-      git clone ${inputs.github_url} project
-      cd project
+      git clone ${inputs.github_url} ${inputs.project_name}
+      cd ${inputs.project_name}
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
 
-      # Angular app scaffold
+      mkdir -p ${inputs.project_name}
+      cd ${inputs.project_name}
+
       mkdir -p frontend
       cd frontend
       npm install -g @angular/cli@${inputs.angular_cli_version}
@@ -19,7 +21,6 @@
       npm install
       cd ..
 
-      # Spring Boot app scaffold
       mkdir -p backend
       cd backend
       curl https://start.spring.io/starter.zip \

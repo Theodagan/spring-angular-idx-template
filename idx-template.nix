@@ -4,22 +4,47 @@
   install = ''
     DEFAULT_REPO=""
 
-    # 🧹 Delete README.md if it exists (template cleanup)
+    # 🧹 Clean up README.md and internal template-only folders
     if [ -f README.md ]; then
       echo "🧹 Removing template README.md before continuing"
       rm README.md
     fi
 
+    for dir in ressources resources; do
+      if [ -d "$dir" ]; then
+        echo "🧹 Removing /$dir folder (template-only)"
+        rm -rf "$dir"
+      fi
+    done
+
     if [ "${inputs.github_url}" != "" ] && [ "${inputs.github_url}" != "$DEFAULT_REPO" ]; then
       echo "🔧 Cloning repository from: ${inputs.github_url}"
       git clone ${inputs.github_url} ${inputs.project_name}
       cd ${inputs.project_name}
+
+      # 📦 Install frontend dependencies if applicable
+      if [ -f frontend/package.json ]; then
+        echo "📦 Installing frontend dependencies..."
+        cd frontend
+        npm ci || npm install
+        cd ..
+      fi
+
+      # ⚙️ Build backend if applicable
+      if [ -f backend/pom.xml ]; then
+        echo "⚙️ Building backend with Maven..."
+        cd backend
+        ./mvnw clean install || mvn clean install
+        cd ..
+      fi
+
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
 
       mkdir -p ${inputs.project_name}
       cd ${inputs.project_name}
 
+      # ▶️ Scaffold Angular
       mkdir -p frontend
       cd frontend
       npm install -g @angular/cli@${inputs.angular_cli_version}
@@ -27,6 +52,7 @@
       npm install
       cd ..
 
+      # ▶️ Scaffold Spring Boot via start.spring.io
       mkdir -p backend
       cd backend
       curl https://start.spring.io/starter.zip \

@@ -64,6 +64,7 @@ in
         echo "⚙️ Building backend with Maven..."
         cd ${backend_path}
         mvn clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
+            mkdir -p .idx
             echo ""
             echo "❌ Tests failed! Retrying without tests..."
             echo "⚠️ Backend app will try to boot but tests are skipped."

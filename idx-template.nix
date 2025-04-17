@@ -25,16 +25,7 @@ in
   ];
  
   bootstrap = ''
-    echo "🛠 Using frontend_path: ${frontend_path}"
-    echo "🛠 Using backend_path: ${backend_path}"
-    echo "🛠 Using mysql_user: ${mysql_user}"
-    echo "🛠 Using mysql_password: ${mysql_password}"
-    echo "🛠 Using mysql_database: ${mysql_database}"
-    echo "🛠 Using mysql_port: ${mysql_port}"
-    echo "-----------------------------------------------"
     echo "🛠 Initializing workspace in $out..."
-    mkdir -p "$out"
-    cd "$out"
 
     DEFAULT_REPO=""
 
@@ -74,6 +65,9 @@ in
 
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
+
+      mkdir -p "$out"
+      cd "$out"
 
       # ▶️ Scaffold Angular
       mkdir -p ${frontend_path}

@@ -3,6 +3,12 @@
     "description": "Template for Java Spring Boot (Maven) + Angular + MySQL with optional GitHub repo and credential injection.",
     "inputs": [
       {
+        "id": "project_name",
+        "type": "string",
+        "label": "Name of the project folder to create/use",
+        "default": "project"
+      },
+      {
         "id": "github_url",
         "type": "string",
         "label": "GitHub repository URL to clone (leave blank to scaffold new project)",
@@ -17,7 +23,7 @@
       {
         "id": "angular_cli_version",
         "type": "number",
-        "label": "Angular CLI version (e.g., 14, 15, 17)",
+        "label": "Angular CLI version (e.g., 14, 15, latest)",
         "default": 14
       },
       {

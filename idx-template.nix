@@ -49,8 +49,13 @@ EOF
       cd ..
     fi
 
-    echo "📁 Adding .idx/ to .gitignore"
-    echo ".idx/" >> .gitignore
+    echo "📁 Updating .gitignore"
+    cat <<EOF >> .gitignore
+.idx/
+dev.nix
+idx-template.nix
+idx-template.json
+EOF
     sort -u .gitignore -o .gitignore
 
     echo "🌐 Creating Angular proxy config at .idx/proxy.conf.json"

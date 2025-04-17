@@ -182,6 +182,7 @@ EOF
             cd ../${frontend_path} && ng serve 
         "";
       };
+    };
 
     previews = {
       enable = true;

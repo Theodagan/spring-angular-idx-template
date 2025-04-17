@@ -17,10 +17,10 @@
       fi
     done
 
-    if [ "${inputs.github_url}" != "" ] && [ "${inputs.github_url}" != "$DEFAULT_REPO" ]; then
-      echo "🔧 Cloning repository from: ${inputs.github_url}"
-      git clone ${inputs.github_url} ${inputs.project_name}
-      cd ${inputs.project_name}
+    if [ "${params.github_url}" != "" ] && [ "${params.github_url}" != "$DEFAULT_REPO" ]; then
+      echo "🔧 Cloning repository from: ${params.github_url}"
+      git clone ${params.github_url} ${params.project_name}
+      cd ${params.project_name}
 
       # 📦 Install frontend dependencies if applicable
       if [ -f frontend/package.json ]; then
@@ -41,13 +41,13 @@
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
 
-      mkdir -p ${inputs.project_name}
-      cd ${inputs.project_name}
+      mkdir -p ${params.project_name}
+      cd ${params.project_name}
 
       # ▶️ Scaffold Angular
       mkdir -p frontend
       cd frontend
-      npm install -g @angular/cli@${inputs.angular_cli_version}
+      npm install -g @angular/cli@${params.angular_cli_version}
       ng new . --skip-install --skip-git --defaults
       npm install
       cd ..

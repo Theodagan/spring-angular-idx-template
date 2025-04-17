@@ -1,42 +1,59 @@
 {
-    "name": "spring-angular-starter",
-    "description": "Template for Java Spring Boot (Maven) + Angular + MySQL with optional GitHub repo and credential injection.",
-    "inputs": [
-      {
-        "id": "project_name",
-        "type": "string",
-        "label": "Name of the project folder to create/use",
-        "default": "project"
+  "name": "Spring Angular Starter",
+  "description": "A full-stack Spring Boot + Angular + MySQL template for Firebase Studio",
+  "params": [
+    {
+      "id": "project_name",
+      "name": "Project Folder Name",
+      "type": "text",
+      "default": "project",
+      "required": false
+    },
+    {
+      "id": "github_url",
+      "name": "GitHub Repo URL (optional)",
+      "type": "text",
+      "default": "",
+      "required": false
+    },
+    {
+      "id": "java_version",
+      "name": "Java Version",
+      "type": "enum",
+      "options": {
+        "11": "Java 11",
+        "17": "Java 17",
+        "21": "Java 21"
       },
-      {
-        "id": "github_url",
-        "type": "string",
-        "label": "GitHub repository URL to clone (leave blank to scaffold new project)",
-        "default": ""
+      "default": "11",
+      "required": false
+    },
+    {
+      "id": "angular_cli_version",
+      "name": "Angular CLI Version",
+      "type": "enum",
+      "options": {
+        "14": "Angular 14",
+        "15": "Angular 15",
+        "16": "Angular 16",
+        "latest": "Latest"
       },
-      {
-        "id": "java_version",
-        "type": "number",
-        "label": "Java version (e.g., 11, 17, 21)",
-        "default": 11
-      },
-      {
-        "id": "angular_cli_version",
-        "type": "number",
-        "label": "Angular CLI version (e.g., 14, 15, latest)",
-        "default": 14
-      },
-      {
-        "id": "java_app_path",
-        "type": "string",
-        "label": "Path to Java Spring Boot app (relative)",
-        "default": "backend"
-      },
-      {
-        "id": "angular_app_path",
-        "type": "string",
-        "label": "Path to Angular app (relative)",
-        "default": "frontend"
-      }
-    ]
-  }
+      "default": "14",
+      "required": false
+    },
+    {
+      "id": "java_app_path",
+      "name": "Java App Path",
+      "type": "text",
+      "default": "backend",
+      "required": false
+    },
+    {
+      "id": "angular_app_path",
+      "name": "Angular App Path",
+      "type": "text",
+      "default": "frontend",
+      "required": false
+    }
+  ]
+}

@@ -141,7 +141,9 @@ EOF
     echo "🧪 Generating .idx/dev.nix with user-defined settings"
     cat <<EOF > .idx/dev.nix
 { pkgs, config, ... }:
-
+let
+  jdkPackage = pkgs.openjdk${java_version};
+in
 {
   channel = "stable-23.11";
 
@@ -182,7 +184,7 @@ EOF
             cd ../${frontend_path} && ng serve 
         "";
       };
-    };
+      };
 
     previews = {
       enable = true;

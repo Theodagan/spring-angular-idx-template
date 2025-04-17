@@ -23,7 +23,7 @@ in
     pkgs.unzip
     pkgs.curl
   ];
-
+ 
   bootstrap = ''
     echo "🛠 Using frontend_path: ${frontend_path}"
     echo "🛠 Using backend_path: ${backend_path}"
@@ -77,8 +77,8 @@ in
       # ▶️ Scaffold Angular
       mkdir -p ${frontend_path}
       cd ${frontend_path}
-      npm install -g @angular/cli@${angular_cli_version}
-      ng new . --skip-install --skip-git --defaults
+      npm install @angular/cli@${angular_cli_version}
+      npx ng new . --skip-install --skip-git --defaults
       npm install
       cd ..
 
@@ -170,7 +170,7 @@ in
 
     workspace = {
       onCreate = {
-        angular-cli = "npm install -g @angular/cli@${angular_cli_version}";
+        angular-cli = "npm install @angular/cli@${angular_cli_version}";
         npm-install = ""
           if [ -f ${frontend_path}/package.json ]; then
             cd ${frontend_path}

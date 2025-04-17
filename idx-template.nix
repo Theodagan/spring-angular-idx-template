@@ -1,32 +1,142 @@
-{ pkgs, project_name, java_version ? "17", angular_cli_version ? "14", mysql_user ? "dev", mysql_password ? "password", mysql_database ? "dev_db", mysql_port ? "3306", ... }:
+{ pkgs
+, project_name ? "my-app"
+, github_url ? ""
+, frontend_path ? "frontend"
+, backend_path ? "backend"
+, java_version ? "17"
+, angular_cli_version ? "14"
+, mysql_user ? "dev"
+, mysql_password ? "password"
+, mysql_database ? "dev_db"
+, mysql_port ? "3306"
+}:
 
+let
+  jdkPackage = builtins.getAttr ("openjdk" + java_version) pkgs;
+in
 {
   packages = [
-    pkgs.nodejs
-    pkgs.curl
-    pkgs.jq
     pkgs.git
+    pkgs.nodejs_20
+    pkgs.mysql
+    pkgs.maven
+    jdkPackage
+    pkgs.unzip
+    pkgs.curl
   ];
 
   bootstrap = ''
+    echo "🛠 Initializing workspace in $out..."
     mkdir -p "$out"
+    cd "$out"
 
-    echo "📁 Copie des fichiers de template vers le workspace..."
-    cp -rf ${./.} "$out"
-    chmod -R +w "$out"
+    DEFAULT_REPO=""
 
-    echo "🧹 Nettoyage des fichiers du template..."
-    rm -rf "$out/.git" "$out/idx-template".{nix,json} "$out/README.md" "$out/ressources"
+    # 🧹 Clean up README.md and internal template-only folders
+    if [ -f README.md ]; then
+      echo "🧹 Removing template README.md before continuing"
+      rm README.md
+    fi
 
-    echo "📝 Génération dynamique du fichier .idx/dev.nix..."
-    mkdir -p "$out/.idx"
-    cat <<EOF > "$out/.idx/dev.nix"
+    for dir in ressources resources; do
+      if [ -d "$dir" ]; then
+        echo "🧹 Removing /$dir folder (template-only)"
+        rm -rf "$dir"
+      fi
+    done
+
+    if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
+      echo "🔗 Cloning repository from: ${github_url}"
+      git clone ${github_url} ${project_name}
+      cd ${project_name}
+
+      # 📦 Install frontend dependencies if applicable
+      if [ -f ${frontend_path}/package.json ]; then
+        echo "📦 Installing frontend dependencies..."
+        cd ${frontend_path}
+        npm ci || npm install
+        cd ..
+      fi
+
+      # ⚙️ Build backend if applicable
+      if [ -f ${backend_path}/pom.xml ]; then
+        echo "⚙️ Building backend with Maven..."
+        cd ${backend_path}
+        ./mvnw clean install || mvn clean install
+        cd ..
+      fi
+
+    else
+      echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
+
+      mkdir -p ${project_name}
+      cd ${project_name}
+
+      # ▶️ Scaffold Angular
+      mkdir -p ${frontend_path}
+      cd ${frontend_path}
+      npm install -g @angular/cli@${angular_cli_version}
+      ng new . --skip-install --skip-git --defaults
+      npm install
+      cd ..
+
+      # ▶️ Scaffold Spring Boot via start.spring.io
+      mkdir -p ${backend_path}
+      cd ${backend_path}
+      curl https://start.spring.io/starter.zip \
+        -d dependencies=web,data-jpa,mysql \
+        -d type=maven-project \
+        -d language=java \
+        -d bootVersion=3.2.4 \
+        -d baseDir=. \
+        -d packageName=com.example.demo \
+        -d name=demo \
+        -o starter.zip
+      unzip starter.zip
+      rm starter.zip
+
+      echo "🔐 Injecting database credentials into Spring Boot application.properties"
+      cat <<EOF > src/main/resources/application.properties
+spring.datasource.url=jdbc:mysql://localhost:${mysql_port}/${mysql_database}
+spring.datasource.username=${mysql_user}
+spring.datasource.password=${mysql_password}
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+EOF
+
+      ./mvnw clean install
+      cd ..
+    fi
+
+    echo "📁 Updating .gitignore"
+    cat <<EOF >> .gitignore
+.idx/
+dev.nix
+idx-template.nix
+idx-template.json
+EOF
+    sort -u .gitignore -o .gitignore
+
+    echo "🌐 Creating Angular proxy config at .idx/proxy.conf.json"
+    mkdir -p .idx
+    cat <<EOF > .idx/proxy.conf.json
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "info"
+  }
+}
+EOF
+
+    echo "🧪 Generating .idx/dev.nix with user-defined settings"
+    cat <<EOF > .idx/dev.nix
 { pkgs, config, ... }:
 
 let
-  javaVersion = "${java_version}";
-  angularCliVersion = "${angular_cli_version}";
-  jdkPackage = builtins.getAttr ("openjdk" + javaVersion) pkgs;
+  jdkPackage = pkgs.${"openjdk" + java_version};
 in
 {
   channel = "stable-24.05";
@@ -58,16 +168,16 @@ in
 
     workspace = {
       onCreate = {
-        angular-cli = "npm install -g @angular/cli@\${angularCliVersion}";
+        angular-cli = "npm install -g @angular/cli@${angular_cli_version}";
         npm-install = ""
-          if [ -f frontend/package.json ]; then
-            cd frontend
+          if [ -f ${frontend_path}/package.json ]; then
+            cd ${frontend_path}
             npm ci || npm install
           fi
         "";
         maven-build = ""
-          if [ -f backend/pom.xml ]; then
-            cd backend
+          if [ -f ${backend_path}/pom.xml ]; then
+            cd ${backend_path}
             ./mvnw clean install || mvn clean install
           fi
         "";
@@ -75,14 +185,14 @@ in
 
       onStart = {
         backend-run = ""
-          if [ -f backend/pom.xml ]; then
-            cd backend
+          if [ -f ${backend_path}/pom.xml ]; then
+            cd ${backend_path}
             ./mvnw spring-boot:run || mvn spring-boot:run &
           fi
         "";
         frontend-run = ""
-          if [ -f frontend/package.json ]; then
-            cd frontend
+          if [ -f ${frontend_path}/package.json ]; then
+            cd ${frontend_path}
             ng serve --proxy-config .idx/proxy.conf.json --port $PORT --host 0.0.0.0 --disable-host-check &
           fi
         "";
@@ -116,6 +226,6 @@ in
 }
 EOF
 
-    echo "✅ Template installé avec succès dans $out"
+    echo "✅ Bootstrap complete for ${project_name}"
   '';
 }

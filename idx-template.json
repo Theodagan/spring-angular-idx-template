@@ -1,6 +1,6 @@
 {
   "name": "Spring Boot + Angular Starter",
-  "description": "Modèle Firebase Studio pour une application full-stack avec Angular en frontend et Spring Boot en backend.",
+  "description": "Modèle Firebase Studio pour une application full-stack avec Angular en frontend et Spring Boot en backend. Permet de cloner un repo existant ou d'en générer un.",
   "params": [
     {
       "id": "project_name",
@@ -8,6 +8,24 @@
       "type": "text",
       "default": "my-app",
       "required": true
+    },
+    {
+      "id": "github_url",
+      "name": "URL GitHub du projet (optionnel)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "frontend_path",
+      "name": "Chemin du dossier frontend",
+      "type": "text",
+      "default": "frontend"
+    },
+    {
+      "id": "backend_path",
+      "name": "Chemin du dossier backend",
+      "type": "text",
+      "default": "backend"
     },
     {
       "id": "java_version",

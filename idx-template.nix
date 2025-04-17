@@ -63,13 +63,12 @@ in
       if [ -f ${backend_path}/pom.xml ]; then
         echo "⚙️ Building backend with Maven..."
         cd ${backend_path}
-        mkdir -p .idx
-        mvn clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
+        mvn clean install  || {
             echo ""
             echo "❌ Tests failed! Retrying without tests..."
             echo "⚠️ Backend app will try to boot but tests are skipped."
             echo ""
-            mvn clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
+            mvn clean install -DskipTests 
           }
         cd ..
       fi

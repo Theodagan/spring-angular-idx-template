@@ -47,8 +47,7 @@ in
 
     if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
       echo "🔗 Cloning repository from: ${github_url}"
-      git clone ${github_url} ${project_name}
-      cd ${project_name}
+      git clone ${github_url} 
 
       # 📦 Install frontend dependencies if applicable
       if [ -f ${frontend_path}/package.json ]; then
@@ -68,9 +67,6 @@ in
 
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
-
-      mkdir -p ${project_name}
-      cd ${project_name}
 
       # ▶️ Scaffold Angular
       mkdir -p ${frontend_path}

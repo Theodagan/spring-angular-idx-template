@@ -19,13 +19,15 @@
       "id": "frontend_path",
       "name": "Chemin du dossier frontend",
       "type": "text",
-      "default": "frontend"
+      "default": "frontend",
+      "required": true
     },
     {
       "id": "backend_path",
       "name": "Chemin du dossier backend",
       "type": "text",
-      "default": "backend"
+      "default": "backend",
+      "required": true
     },
     {
       "id": "java_version",

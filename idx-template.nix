@@ -16,7 +16,7 @@ in
 {
   packages = [
     pkgs.git
-    pkgs.nodejs_20
+    pkgs.nodejs_18
     pkgs.mysql
     pkgs.maven
     jdkPackage
@@ -51,7 +51,11 @@ in
       if [ -f ${frontend_path}/package.json ]; then
         echo "📦 Installing frontend dependencies..."
         cd ${frontend_path}
-        npm ci || npm install
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
         cd ..
       fi
 

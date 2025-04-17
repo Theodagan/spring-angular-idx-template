@@ -53,7 +53,8 @@ in
 
     if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
       echo "🔗 Cloning repository from: ${github_url}"
-      git clone ${github_url} 
+      git clone ${github_url} "$out"
+      cd "$out"
 
       # 📦 Install frontend dependencies if applicable
       if [ -f ${frontend_path}/package.json ]; then

@@ -193,7 +193,7 @@ in
         frontend-run = ""
           if [ -f ${frontend_path}/package.json ]; then
             cd ${frontend_path}
-            ng serve --proxy-config .idx/proxy.conf.json --port $PORT --host 0.0.0.0 --disable-host-check &
+            ng serve --proxy-config .idx/proxy.conf.json --port \$PORT --host 0.0.0.0 --disable-host-check &
           fi
         "";
       };
@@ -215,7 +215,7 @@ in
           "--proxy-config"
           ".idx/proxy.conf.json"
           "--port"
-          "$PORT"
+          "\$PORT"
           "--host"
           "0.0.0.0"
           "--disable-host-check"

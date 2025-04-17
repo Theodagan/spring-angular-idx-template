@@ -63,13 +63,13 @@ in
       if [ -f ${backend_path}/pom.xml ]; then
         echo "⚙️ Building backend with Maven..."
         cd ${backend_path}
-        ./mvnw clean install || {
-          echo ""
-          echo "❌ Tests failed! Retrying without tests..."
-          echo "⚠️ Backend app will try to boot but tests are skipped."
-          echo ""
-          ./mvnw clean install -DskipTests
-        }
+        ./mvnw clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
+            echo ""
+            echo "❌ Tests failed! Retrying without tests..."
+            echo "⚠️ Backend app will try to boot but tests are skipped."
+            echo ""
+            ./mvnw clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
+          }
         cd ..
       fi
 
@@ -185,12 +185,12 @@ in
         maven-build = ""
           if [ -f ${backend_path}/pom.xml ]; then
             cd ${backend_path}
-            ./mvnw clean install || {
+            ./mvnw clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
               echo ""
               echo "❌ Tests failed! Retrying without tests..."
               echo "⚠️ Backend app will try to boot but tests are skipped."
               echo ""
-              ./mvnw clean install -DskipTests
+              ./mvnw clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
             }
           fi
         "";

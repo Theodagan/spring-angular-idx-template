@@ -11,16 +11,12 @@
     {
       "id": "frontend_path",
       "name": "Chemin du dossier frontend",
-      "type": "text",
-      "default": "frontend",
-      "required": true
+      "type": "text"
     },
     {
       "id": "backend_path",
       "name": "Chemin du dossier backend",
-      "type": "text",
-      "default": "backend",
-      "required": true
+      "type": "text"
     },
     {
       "id": "java_version",

@@ -142,11 +142,8 @@ EOF
     cat <<EOF > .idx/dev.nix
 { pkgs, config, ... }:
 
-let
-  jdkPackage = pkgs.${"openjdk" + java_version};
-in
 {
-  channel = "stable-24.05";
+  channel = "stable-23.11";
 
   packages = [
     jdkPackage
@@ -157,7 +154,6 @@ in
   ];
 
   env = {
-    JAVA_HOME = "\${jdkPackage.home}";
     MYSQL_USER = "${mysql_user}";
     MYSQL_PASSWORD = "${mysql_password}";
     MYSQL_DATABASE = "${mysql_database}";
@@ -175,48 +171,17 @@ in
 
     workspace = {
       onCreate = {
-        angular-cli = "npm install @angular/cli@${angular_cli_version}";
-        npm-install = ""
-          if [ -f ${frontend_path}/package.json ]; then
-            cd ${frontend_path}
-            npm ci || npm install
-          fi
-        "";
-        maven-build = ""
-          if [ -f ${backend_path}/pom.xml ]; then
-            cd ${backend_path}
-            mvn clean install -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log || {
-              echo ""
-              echo "❌ Tests failed! Retrying without tests..."
-              echo "⚠️ Backend app will try to boot but tests are skipped."
-              echo ""
-              mvn clean install -DskipTests  -q | tee build.log | grep -E "\[ERROR\]|\[WARNING\]" > .idx/maven-warnings.log
-            }
-          fi
+        install = ""
+          cd  ${backend_path} && mvn clean install # Build backend
+          cd .. && cd ${frontend_path} && npm install # Install frontend deps
         "";
       };
-
       onStart = {
-        backend-run = ""
-          if [ -f ${backend_path}/pom.xml ]; then
-            cd ${backend_path}
-            mvn spring-boot:run || mvn spring-boot:run &
-          fi
-        "";
-        frontend-run = ""
-          if [ -f ${frontend_path}/package.json ]; then
-            cd ${frontend_path}
-            ng serve --proxy-config .idx/proxy.conf.json --port \$PORT --host 0.0.0.0 --disable-host-check &
-          fi
+      runServer = ""
+            cd ${backend_path} && mvn spring-boot:run &> /dev/null &
+            cd ../${frontend_path} && ng serve 
         "";
       };
-
-      default.openFiles = [
-        "frontend/src/app/app.component.ts"
-        "backend/src/main/java/com/example/demo/DemoApplication.java"
-        "backend/src/main/resources/application.properties"
-      ];
-    };
 
     previews = {
       enable = true;

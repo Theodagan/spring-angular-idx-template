@@ -4,6 +4,12 @@
   install = ''
     DEFAULT_REPO=""
 
+    # 🧹 Delete README.md if it exists (template cleanup)
+    if [ -f README.md ]; then
+      echo "🧹 Removing template README.md before continuing"
+      rm README.md
+    fi
+
     if [ "${inputs.github_url}" != "" ] && [ "${inputs.github_url}" != "$DEFAULT_REPO" ]; then
       echo "🔧 Cloning repository from: ${inputs.github_url}"
       git clone ${inputs.github_url} ${inputs.project_name}

@@ -1,0 +1,36 @@
+{
+    "name": "spring-angular-starter",
+    "description": "Template for Java Spring Boot (Maven) + Angular + MySQL with optional GitHub repo and credential injection.",
+    "inputs": [
+      {
+        "id": "github_url",
+        "type": "string",
+        "label": "GitHub repository URL to clone (leave blank to scaffold new project)",
+        "default": ""
+      },
+      {
+        "id": "java_version",
+        "type": "number",
+        "label": "Java version (e.g., 11, 17, 21)",
+        "default": 11
+      },
+      {
+        "id": "angular_cli_version",
+        "type": "number",
+        "label": "Angular CLI version (e.g., 14, 15, 17)",
+        "default": 14
+      },
+      {
+        "id": "java_app_path",
+        "type": "string",
+        "label": "Path to Java Spring Boot app (relative)",
+        "default": "backend"
+      },
+      {
+        "id": "angular_app_path",
+        "type": "string",
+        "label": "Path to Angular app (relative)",
+        "default": "frontend"
+      }
+    ]
+  }

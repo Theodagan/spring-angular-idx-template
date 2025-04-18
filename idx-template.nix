@@ -172,8 +172,6 @@ EOF
         command = [
           "ng"
           "serve"
-          "--proxy-config"
-          ".idx/proxy.conf.json"
           "--port"
           "\$FRONTEND_PORT"
           "--host"

@@ -19,7 +19,7 @@ in
     pkgs.nodejs_18
     pkgs.mysql
     pkgs.maven
-    builtins.getAttr ("openjdk" + java_version) pkgs
+    jdkPackage
     pkgs.unzip
     pkgs.curl
   ];

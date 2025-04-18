@@ -158,7 +158,7 @@ EOF
 
     workspace = {
       onStart = {
-        runServer = "cd ${frontend_path} && NG_CLI_ANALYTICS=ci ng serve --host 0.0.0.0 --port $FRONTEND_PORT --disable-host-check & sleep 5 && cd ../${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run";
+        runServer = "cd ${frontend_path} && NG_CLI_ANALYTICS=ci ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check & sleep 5 && cd ../${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run";
       };
     };
 

@@ -156,9 +156,11 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "echo '🔥 install hook running' >&2 && cd ${backend_path} && echo '📦 installing backend' >&2 && mvn clean install -DskipTests >> ../.idx/bootstrap.log 2>&1 || echo '⚠️ Backend build failed, skipping backend run' >> ../.idx/bootstrap.log && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run >> ../.idx/bootstrap.log 2>&1 & || echo '⚠️ Backend failed to start' >> ../.idx/bootstrap.log && cd ../${frontend_path} && echo '📦 installing frontend' >&2 && npm install >> ../.idx/bootstrap.log 2>&1 && echo '🚀 starting frontend' >&2 && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check >> ../.idx/bootstrap.log 2>&1 & wait";      };
+        install = "cd ${backend_path} && mvn clean install -DskipTests &> /dev/null & cd ../${frontend_path} && npm install ;      
+      };
       onStart = {
-        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../${frontend_path} && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check";      };
+        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../${frontend_path} && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check";      
+      };
     };
 
     previews = {

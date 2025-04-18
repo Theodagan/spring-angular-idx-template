@@ -160,6 +160,7 @@ in
     MYSQL_PASSWORD = "${mysql_password}";
     MYSQL_DATABASE = "${mysql_database}";
     MYSQL_PORT = "${mysql_port}";
+    FRONTEND_PORT = "4200";
   };
 
   services.mysql.enable = true;
@@ -177,8 +178,7 @@ in
           cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
-        runServer = "cd ${backend_path} && mvn spring-boot:run &> /dev/null & cd ../${frontend_path} && ng serve --proxy-config .idx/proxy.conf.json --port \$PORT --host 0.0.0.0 --disable-host-check";
-      };
+        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run &> /dev/null & cd ../${frontend_path} && ng serve --proxy-config .idx/proxy.conf.json --port $FRONTEND_PORT --host 0.0.0.0 --disable-host-check";      };
     };
 
     previews = {

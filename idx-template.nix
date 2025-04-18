@@ -158,10 +158,10 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "cd ${backend_path}/ && mvn clean install -DskipTests && cd ../${frontend_path}/ && npm install";      
+        install = "(cd ${backend_path}/ && mvn clean install -DskipTests) & cd ${frontend_path}/ && npm install";      
       };
       onStart = {
-        runServer = "cd ${backend_path}/ && mvn spring-boot:run &> /dev/null & cd ../${frontend_path}/ && ng serve ";      
+        runServer = "(cd ${backend_path}/ && mvn spring-boot:run) & cd ${frontend_path}/ && ng serve";      
       };
     };
 

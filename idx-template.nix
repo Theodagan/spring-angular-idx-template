@@ -159,7 +159,7 @@ EOF
         install = "cd ${backend_path} && mvn clean install -DskipTests && cd ../${frontend_path} && npm install";      
       };
       onStart = {
-        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../${frontend_path} && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check";      
+        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run && cd ../${frontend_path} && ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check";      
       };
     };
 

@@ -125,7 +125,7 @@ EOF
     echo "🧪 Generating .idx/dev.nix with user-defined settings"
     mkdir -p .idx
     cat <<EOF > .idx/dev.nix
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   channel = "stable-23.11";
 

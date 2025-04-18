@@ -123,6 +123,7 @@ EOF
     sort -u .gitignore -o .gitignore
 
     echo "🧪 Generating .idx/dev.nix with user-defined settings"
+    mkdir -p .idx
     cat <<EOF > .idx/dev.nix
 { pkgs, config, ... }:
 let

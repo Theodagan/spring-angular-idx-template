@@ -49,30 +49,30 @@ in
       echo "Bootstraping begin" >> $out/.idx/bootstrap.log
 
       # 📦 Install frontend dependencies if applicable
-      if [ -f ${frontend_path}/package.json ]; then
-        echo "📦 Installing frontend dependencies..." >> $out/.idx/bootstrap.log
-        cd ${frontend_path}
-        if [ -f package-lock.json ]; then
-          npm ci
-        else
-          npm install
-        fi
-        cd ..
-      fi
+      # if [ -f ${frontend_path}/package.json ]; then
+      #   echo "📦 Installing frontend dependencies..." >> $out/.idx/bootstrap.log
+      #   cd ${frontend_path}
+      #   if [ -f package-lock.json ]; then
+      #     npm ci
+      #   else
+      #     npm install
+      #   fi
+      #   cd ..
+      # fi
 
       # ⚙️ Build backend if applicable
-      if [ -f ${backend_path}/pom.xml ]; then
-        echo "⚙️ Building backend with Maven...">> $out/.idx/bootstrap.log
-        cd ${backend_path}
-        mvn clean install  || {
-            echo ""
-            echo "❌ Tests failed! Retrying without tests..." >> $out/.idx/bootstrap.log
-            echo "⚠️ Backend app will try to boot but tests are skipped."
-            echo ""
-            mvn clean install -DskipTests 
-          }
-        cd ..
-      fi
+      # if [ -f ${backend_path}/pom.xml ]; then
+      #   echo "⚙️ Building backend with Maven...">> $out/.idx/bootstrap.log
+      #   cd ${backend_path}
+      #   mvn clean install  || {
+      #       echo ""
+      #       echo "❌ Tests failed! Retrying without tests..." >> $out/.idx/bootstrap.log
+      #       echo "⚠️ Backend app will try to boot but tests are skipped."
+      #       echo ""
+      #       mvn clean install -DskipTests 
+      #     }
+      #   cd ..
+      # fi
 
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..." >> $out/.idx/bootstrap.log
@@ -85,7 +85,7 @@ in
       cd ${frontend_path}
       npm install @angular/cli@${angular_cli_version}
       ng new ${frontend_path} --directory . --skip-install --skip-git --defaults
-      npm install
+      # npm install
       cd ..
 
       # ▶️ Scaffold Spring Boot via start.spring.io
@@ -113,7 +113,7 @@ spring.jpa.show-sql=true
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 EOF
 
-      mvn clean install
+      # mvn clean install
       cd ..
     fi
 
@@ -157,8 +157,11 @@ EOF
     ];
 
     workspace = {
+      onCreate = {
+        install = "cd ${backend_path}/ && mvn clean install -DskipTests && cd ../${frontend_path}/ && npm install";      
+      };
       onStart = {
-        runServer = "cd ${frontend_path} && NG_CLI_ANALYTICS=ci ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check & sleep 5 && cd ../${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run";
+        runServer = "cd ${backend_path}/ && mvn spring-boot:run &> /dev/null & cd ../${frontend_path}/ && ng serve ";      
       };
     };
 

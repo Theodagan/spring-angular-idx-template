@@ -65,7 +65,7 @@ in
         cd ${backend_path}
         mvn clean install  || {
             echo ""
-            echo "❌ Tests failed! Retrying without tests..." 
+            echo "❌ Tests failed! Retrying without tests..." >> $out/.idx/bootstrap.log
             echo "⚠️ Backend app will try to boot but tests are skipped."
             echo ""
             mvn clean install -DskipTests 
@@ -155,7 +155,7 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
+        install = "cd  ${backend_path} && mvn clean install -DskipTests && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
         runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      

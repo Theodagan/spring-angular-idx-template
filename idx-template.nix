@@ -26,31 +26,30 @@ in
  
   bootstrap = ''
     echo "🛠 Initializing workspace in $out..."
-    echo "🔨 Bootstrapping..." >&2
 
     DEFAULT_REPO=""
 
     # 🧹 Clean up README.md and internal template-only folders
     if [ -f README.md ]; then
-      echo "🧹 Removing template README.md before continuing"
       rm README.md
     fi
 
     for dir in ressources resources; do
       if [ -d "$dir" ]; then
-        echo "🧹 Removing /$dir folder (template-only)"
         rm -rf "$dir"
       fi
     done
 
     if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
-      echo "🔗 Cloning repository from: ${github_url}"
       git clone ${github_url} "$out"
       cd "$out"
 
+      mkdir -p $out/.idx
+      echo "📦testing log system to debug" >> $out/.idx/bootstrap.log
+
       # 📦 Install frontend dependencies if applicable
       if [ -f ${frontend_path}/package.json ]; then
-        echo "📦 Installing frontend dependencies..."
+        echo "📦 Installing frontend dependencies..." 
         cd ${frontend_path}
         if [ -f package-lock.json ]; then
           npm ci
@@ -159,9 +158,9 @@ EOF
         install = "cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
-        runServer = "echo '🔧 Starting backend...' >&2 && cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && echo '🟢 Starting frontend...' >&2 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";    
-      };
+        runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      };
     };
+
   };
 }
 EOF

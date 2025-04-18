@@ -45,11 +45,11 @@ in
       cd "$out"
 
       mkdir -p $out/.idx
-      echo "📦testing log system to debug" >> $out/.idx/bootstrap.log
+      echo "Bootstraping begin" >> $out/.idx/bootstrap.log
 
       # 📦 Install frontend dependencies if applicable
       if [ -f ${frontend_path}/package.json ]; then
-        echo "📦 Installing frontend dependencies..." 
+        echo "📦 Installing frontend dependencies..." >> $out/.idx/bootstrap.log
         cd ${frontend_path}
         if [ -f package-lock.json ]; then
           npm ci
@@ -61,11 +61,11 @@ in
 
       # ⚙️ Build backend if applicable
       if [ -f ${backend_path}/pom.xml ]; then
-        echo "⚙️ Building backend with Maven..."
+        echo "⚙️ Building backend with Maven...">> $out/.idx/bootstrap.log
         cd ${backend_path}
         mvn clean install  || {
             echo ""
-            echo "❌ Tests failed! Retrying without tests..."
+            echo "❌ Tests failed! Retrying without tests..." 
             echo "⚠️ Backend app will try to boot but tests are skipped."
             echo ""
             mvn clean install -DskipTests 
@@ -74,7 +74,7 @@ in
       fi
 
     else
-      echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
+      echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..." >> $out/.idx/bootstrap.log
 
       mkdir -p "$out"
       cd "$out"
@@ -116,13 +116,13 @@ EOF
       cd ..
     fi
 
-    echo "📁 Updating .gitignore"
+    echo "📁 Updating .gitignore" >> $out/.idx/bootstrap.log
     cat <<EOF >> .gitignore
 .idx/
 EOF
     sort -u .gitignore -o .gitignore
 
-    echo "🧪 Generating .idx/dev.nix with user-defined settings"
+    echo "🧪 Generating .idx/dev.nix with user-defined settings" >> $out/.idx/bootstrap.log
     mkdir -p .idx
     cat <<EOF > .idx/dev.nix
 { pkgs, ... }:
@@ -158,13 +158,14 @@ EOF
         install = "cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
-        runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      };
+        runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      
+      };
     };
 
   };
 }
 EOF
 
-    echo "✅ Bootstrap complete "
+    echo "✅ Bootstrap complete " >> $out/.idx/bootstrap.log
   '';
 }

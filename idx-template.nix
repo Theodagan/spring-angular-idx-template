@@ -142,6 +142,7 @@ EOF
     MYSQL_PASSWORD = "${mysql_password}";
     MYSQL_DATABASE = "${mysql_database}";
     MYSQL_PORT = "${mysql_port}";
+    FRONTEND_PORT = "4200";
   };
 
   services.mysql.enable = true;
@@ -155,10 +156,26 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "echo '🔥 install hook running' >&2 && cd  ${backend_path}  && echo '📦 installing backend' >&2 && mvn clean install -DskipTests || echo '⚠️ Backend build failed, skipping backend run' >&2 && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & || echo '⚠️ Backend failed to start, continuing...' >&2 && cd ../ ${frontend_path}  && echo '📦 installing frontend' >&2 && npm install && echo '🚀 starting frontend' >&2 && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check & wait";
-      };
+        install = "echo '🔥 install hook running' >&2 && cd ${backend_path} && echo '📦 installing backend' >&2 && mvn clean install -DskipTests >> ../.idx/bootstrap.log 2>&1 || echo '⚠️ Backend build failed, skipping backend run' >> ../.idx/bootstrap.log && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run >> ../.idx/bootstrap.log 2>&1 & || echo '⚠️ Backend failed to start' >> ../.idx/bootstrap.log && cd ../${frontend_path} && echo '📦 installing frontend' >&2 && npm install >> ../.idx/bootstrap.log 2>&1 && echo '🚀 starting frontend' >&2 && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check >> ../.idx/bootstrap.log 2>&1 & wait";      };
       onStart = {
-        runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      
+        runServer = "cd ${backend_path} && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../${frontend_path} && npx ng serve --host 0.0.0.0 --port \$FRONTEND_PORT --disable-host-check";      };
+    };
+
+    previews = {
+      enable = true;
+      previews.web = {
+        manager = "web";
+        command = [
+          "ng"
+          "serve"
+          "--proxy-config"
+          ".idx/proxy.conf.json"
+          "--port"
+          "\$FRONTEND_PORT"
+          "--host"
+          "0.0.0.0"
+          "--disable-host-check"
+        ];
       };
     };
 

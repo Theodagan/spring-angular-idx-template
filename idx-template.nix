@@ -155,7 +155,7 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "cd  ${backend_path} && mvn clean install -DskipTests && cd .. && cd ${frontend_path} && npm install ";
+        install = "echo '🔥 install hook running' >&2 && cd  ${backend_path}  && echo '📦 installing backend' >&2 && mvn clean install -DskipTests || echo '⚠️ Backend build failed, skipping backend run' >&2 && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & || echo '⚠️ Backend failed to start, continuing...' >&2 && cd ../ ${frontend_path}  && echo '📦 installing frontend' >&2 && npm install && echo '🚀 starting frontend' >&2 && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check & wait";
       };
       onStart = {
         runServer = "cd back && SPRING_APPLICATION_JSON='{\"server\":{\"address\":\"0.0.0.0\"}}' mvn spring-boot:run & sleep 5 && cd ../front && npx ng serve --host 0.0.0.0 --port 4200 --disable-host-check";      

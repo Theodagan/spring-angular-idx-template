@@ -19,7 +19,7 @@ in
     pkgs.nodejs_18
     pkgs.mysql
     pkgs.maven
-    jdkPackage
+    builtins.getAttr ("openjdk" + java_version) pkgs
     pkgs.unzip
     pkgs.curl
   ];
@@ -126,14 +126,11 @@ EOF
     mkdir -p .idx
     cat <<EOF > .idx/dev.nix
 { pkgs, config, ... }:
-let
-  jdkPackage = pkgs.openjdk${java_version};
-in
 {
   channel = "stable-23.11";
 
   packages = [
-    jdkPackage
+    pkgs.openjdk${java_version}
     pkgs.nodejs_20
     pkgs.mysql
     pkgs.maven

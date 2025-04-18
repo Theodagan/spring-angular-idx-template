@@ -119,24 +119,8 @@ EOF
     echo "📁 Updating .gitignore"
     cat <<EOF >> .gitignore
 .idx/
-dev.nix
-idx-template.nix
-idx-template.json
 EOF
     sort -u .gitignore -o .gitignore
-
-    echo "🌐 Creating Angular proxy config at .idx/proxy.conf.json"
-    mkdir -p .idx
-    cat <<EOF > .idx/proxy.conf.json
-{
-  "/api": {
-    "target": "http://localhost:8080",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "info"
-  }
-}
-EOF
 
     echo "🧪 Generating .idx/dev.nix with user-defined settings"
     cat <<EOF > .idx/dev.nix
@@ -174,10 +158,11 @@ in
 
     workspace = {
       onCreate = {
-        install = "
-          cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
+        install = "cd  ${backend_path} && mvn clean install && cd .. && cd ${frontend_path} && npm install ";
       };
       onStart = {
+        runServer = "cd ${backend_path} && mvn spring-boot:run &> /dev/null & cd ../${frontend_path} && ng serve";      
+      };
     };
 
     previews = {

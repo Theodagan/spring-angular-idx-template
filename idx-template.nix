@@ -43,6 +43,7 @@ in
     if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
       git clone ${github_url} "$out"
       cd "$out"
+      rm -rf .git
 
       mkdir -p $out/.idx
       echo "Bootstraping begin" >> $out/.idx/bootstrap.log
@@ -160,7 +161,7 @@ EOF
         install = "cd ${backend_path} && mvn clean install -DskipTests && cd ../${frontend_path} && npm install";      
       };
       onStart = {
-        runServer = "cd ${backend_path} && mvn spring-boot:run &> /dev/null & cd ../${frontend_path} & ng serve ";      
+        runServer = "cd ${backend_path} && mvn spring-boot:run &> /dev/null & cd ../${frontend_path} && ng serve ";      
       };
     };
 

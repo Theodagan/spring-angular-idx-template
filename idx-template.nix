@@ -8,6 +8,7 @@
 , mysql_password ? "password"
 , mysql_database ? "dev_db"
 , mysql_port ? "3306"
+, git-linked ? false
 }:
 
 let
@@ -40,7 +41,7 @@ in
       fi
     done
 
-    if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" ]; then
+    if [ "${github_url}" != "" ] && [ "${github_url}" != "$DEFAULT_REPO" && ${git-linked} == false ]; then
       git clone ${github_url} "$out"
       cd "$out"
       rm -rf .git

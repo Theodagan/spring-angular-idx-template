@@ -65,6 +65,12 @@
       "name": "Port MySQL",
       "type": "text",
       "default": "3306"
+    },
+    {
+      "id": "git-link",
+      "name": "Keep Git connected",
+      "type": "bool",
+      "default": "false"
     }
   ]
 }

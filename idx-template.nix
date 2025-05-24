@@ -105,7 +105,7 @@ in
 
       echo "🔐 Injecting database credentials into Spring Boot application.properties"
       cat <<EOF > src/main/resources/application.properties
-spring.datasource.url=jdbc:mysql://localhost:${mysql_port}/${mysql_database}
+spring.datasource.url=jdbc:mysql://localhost:${mysql_port}/${mysql_database}?allowPublicKeyRetrieval=true
 spring.datasource.username=${mysql_user}
 spring.datasource.password=${mysql_password}
 spring.jpa.hibernate.ddl-auto=update

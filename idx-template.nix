@@ -52,6 +52,9 @@ in
       # 📝 Ensure log directory exists before writing
       mkdir -p .idx
       echo "📁 Scaffolding Angular + Spring Boot app..." >> .idx/bootstrap.log
+
+      echo "📍 FRONTEND=$FRONTEND BACKEND=$BACKEND" 
+      echo "📍VALUES:  FRONTEND=${frontend_path} BACKEND=${backend_path}"   
       
       # ▶️ Scaffold Angular
       mkdir -p "$FRONTEND"

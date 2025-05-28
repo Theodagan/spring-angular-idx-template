@@ -49,6 +49,9 @@ in
 
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
+
+      mkdir -p "$out"
+      cd "$out"
       
       # 📝 Ensure log directory exists before writing
       mkdir -p .idx

@@ -68,7 +68,7 @@ in
       mkdir -p "$BACKEND"
       echo "📦 Downloading Spring Boot project..." >> .idx/bootstrap.log
       
-      curl https://start.spring.io/starter.zip \
+      curl -L https://start.spring.io/starter.zip \
         -d dependencies=web,data-jpa,mysql \
         -d type=maven-project \
         -d language=java \

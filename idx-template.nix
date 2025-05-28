@@ -47,16 +47,27 @@ in
       echo "📦 Cloned from GitHub: ${github_url}" >> .idx/bootstrap.log
 
     else
-      echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..." >> .idx/bootstrap.log
+      echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
+
       mkdir -p "$out"
       cd "$out"
-
+      
+      # 📝 Ensure log directory exists before writing
+      mkdir -p .idx
+      echo "📁 Scaffolding Angular + Spring Boot app..." >> .idx/bootstrap.log
+      
       # ▶️ Scaffold Angular
       mkdir -p "$FRONTEND"
-      (cd "$FRONTEND" && npx @angular/cli@${angular_cli_version} new . --skip-install --skip-git --defaults)
-
+      (
+        cd "$FRONTEND"
+        echo "📦 Creating Angular app in $FRONTEND..." >> ../.idx/bootstrap.log
+        npx @angular/cli@${angular_cli_version} new . --skip-install --skip-git --defaults
+      )
+      
       # ▶️ Scaffold Spring Boot
       mkdir -p "$BACKEND"
+      echo "📦 Downloading Spring Boot project..." >> .idx/bootstrap.log
+      
       curl https://start.spring.io/starter.zip \
         -d dependencies=web,data-jpa,mysql \
         -d type=maven-project \
@@ -66,8 +77,12 @@ in
         -d packageName=com.example.demo \
         -d name=demo \
         -o "$BACKEND/starter.zip"
-
-      (cd "$BACKEND" && unzip starter.zip && rm starter.zip)
+      
+      (
+        cd "$BACKEND"
+        unzip starter.zip && rm starter.zip
+        echo "📂 Unzipped Spring Boot app in $BACKEND" >> ../.idx/bootstrap.log
+      )
 
       # ➕ Inject DB config
       cat <<EOF > "$BACKEND/src/main/resources/application.properties"

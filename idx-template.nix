@@ -105,9 +105,9 @@ done
 echo "✅ MySQL is up. Creating user and database..."
 
 mysql -u root <<EOSQL
-CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
-CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';
-GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';
+CREATE DATABASE IF NOT EXISTS ${mysql_database};
+CREATE USER IF NOT EXISTS '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_password}';
+GRANT ALL PRIVILEGES ON ${mysql_database}.* TO '${mysql_user}'@'localhost';
 FLUSH PRIVILEGES;
 EOSQL
 

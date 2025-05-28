@@ -91,6 +91,30 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 EOF
+
+      # ➕ Crée le script .idx/init-db.sh
+cat <<'EOF' > .idx/init-db.sh
+#!/usr/bin/env bash
+
+# Wait for MySQL to start
+echo "⏳ Waiting for MySQL to be ready..."
+until mysqladmin ping -h"127.0.0.1" --silent; do
+  sleep 1
+done
+
+echo "✅ MySQL is up. Creating user and database..."
+
+mysql -u root <<EOSQL
+CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';
+FLUSH PRIVILEGES;
+EOSQL
+
+echo "✅ Database and user setup completed."
+EOF
+
+      chmod +x .idx/init-db.sh
     fi
 
     # 📁 Update .gitignore safely
@@ -134,7 +158,7 @@ EOF
 
     workspace = {
       onCreate = {
-        install = "(cd ${backend_path}/ && mvn clean install -DskipTests) & cd ${frontend_path}/ && npm install";      
+        install = "./.idx/init-db.sh && (cd ${backend_path}/ && mvn clean install -DskipTests) & cd ${frontend_path}/ && npm install";      
       };
       onStart = {
         runServer = "(cd ${backend_path}/ && mvn spring-boot:run) & cd ${frontend_path}/ && ng serve";      

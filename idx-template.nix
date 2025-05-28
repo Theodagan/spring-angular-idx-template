@@ -65,8 +65,7 @@ in
       (
         cd "$FRONTEND"
         echo "📦 Creating Angular app in $FRONTEND..." >> ../.idx/bootstrap.log
-        npx @angular/cli@${angular_cli_version} new . --skip-install --skip-git --defaults
-      )
+        npx @angular/cli@${angular_cli_version} new app --directory . --skip-install --skip-git --defaults      )
       
       # ▶️ Scaffold Spring Boot
       mkdir -p "$BACKEND"

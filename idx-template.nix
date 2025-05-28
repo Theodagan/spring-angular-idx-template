@@ -22,7 +22,7 @@ in
     pkgs.maven
     jdkPackage
     pkgs.unzip
-    pkgs.curl,
+    pkgs.curl
     pkgs.spring-boot-cli 
   ];
 

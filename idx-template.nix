@@ -22,7 +22,8 @@ in
     pkgs.maven
     jdkPackage
     pkgs.unzip
-    pkgs.curl
+    pkgs.curl,
+    pkgs.spring-boot-cli 
   ];
 
   bootstrap = ''
@@ -66,22 +67,17 @@ in
       
       # ▶️ Scaffold Spring Boot
       mkdir -p "$BACKEND"
-      echo "📦 Downloading Spring Boot project..." >> .idx/bootstrap.log
-      
-      curl -L https://start.spring.io/starter.zip \
-        -d dependencies=web,data-jpa,mysql \
-        -d type=maven-project \
-        -d language=java \
-        -d bootVersion=${spring_boot_version} \
-        -d baseDir=. \
-        -d packageName=com.example.demo \
-        -d name=demo \
-        -o "$BACKEND/starter.zip"
-      
+      echo "📦 Creating Spring Boot app using spring init..." >> .idx/bootstrap.log
       (
         cd "$BACKEND"
-        unzip starter.zip && rm starter.zip
-        echo "📂 Unzipped Spring Boot app in $BACKEND" >> ../.idx/bootstrap.log
+        spring init \
+          --dependencies=web,data-jpa,mysql \
+          --build=maven \
+          --java-version=${java_version} \
+          --package-name=com.example.demo \
+          demo
+      
+        mv demo/* . && rm -rf demo
       )
 
       # ➕ Inject DB config

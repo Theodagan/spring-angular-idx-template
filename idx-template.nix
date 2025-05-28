@@ -144,7 +144,6 @@ EOF
     MYSQL_PASSWORD = "${mysql_password}";
     MYSQL_DATABASE = "${mysql_database}";
     MYSQL_PORT = "${mysql_port}";
-    FRONTEND_PORT = "4200";
   };
 
   services.mysql.enable = true;
@@ -170,13 +169,9 @@ EOF
       previews.web = {
         manager = "web";
         command = [
-          "ng"
-          "serve"
-          "--port"
-          "\$FRONTEND_PORT"
-          "--host"
-          "0.0.0.0"
-          "--disable-host-check"
+          "sh"
+          "-c"
+          "cd ${frontend_path} && ng serve --port $PORT --host 0.0.0.0"
         ];
       };
     };

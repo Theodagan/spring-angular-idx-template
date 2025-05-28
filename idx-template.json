@@ -11,18 +11,20 @@
     {
       "id": "frontend_path",
       "name": "Chemin du dossier frontend",
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     {
       "id": "backend_path",
       "name": "Chemin du dossier backend",
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     {
       "id": "java_version",
       "name": "Version Java (JDK)",
       "type": "enum",
-      "default": "17",
+      "default": "21",
       "options": {
         "11": "Java 11",
         "17": "Java 17",
@@ -34,7 +36,7 @@
       "id": "angular_cli_version",
       "name": "Version Angular CLI",
       "type": "enum",
-      "default": "14",
+      "default": "latest",
       "options": {
         "14": "v14",
         "15": "v15",

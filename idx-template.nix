@@ -102,7 +102,13 @@ EOF
     echo "🔧 Generating .idx/dev.nix..." >> .idx/bootstrap.log
     mkdir -p .idx
     cat <<EOF > .idx/dev.nix
-{ pkgs, ... }:
+{ pkgs
+, mysql_user ? "${mysql_user}"
+, mysql_password ? "${mysql_password}"
+, mysql_database ? "${mysql_database}"
+, mysql_port ? "${mysql_port}"
+, ...
+}:
 {
   channel = "stable-23.11";
 
@@ -116,14 +122,29 @@ EOF
   ];
 
   env = {
-    MYSQL_USER = "${mysql_user}";
-    MYSQL_PASSWORD = "${mysql_password}";
-    MYSQL_DATABASE = "${mysql_database}";
-    MYSQL_PORT = "${mysql_port}";
+    MYSQL_USER = mysql_user;
+    MYSQL_PASSWORD = mysql_password;
+    MYSQL_DATABASE = mysql_database;
+    MYSQL_PORT = mysql_port;
     FRONTEND_PORT = "4200";
   };
 
-  services.mysql.enable = true;
+  services.mysql = {
+    enable = true;
+    package = pkgs.mysql;
+    initialDatabases = [
+      { name = mysql_database; }
+    ];
+    ensureUsers = [
+      {
+        name = mysql_user;
+        password = mysql_password;
+        privileges = {
+          "\${mysql_database}.*" = "ALL PRIVILEGES";
+        };
+      }
+    ];
+  };
 
   idx = {
     extensions = [

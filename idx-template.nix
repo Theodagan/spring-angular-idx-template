@@ -49,6 +49,8 @@ in
     else
       echo "🆕 No GitHub URL provided, scaffolding new Angular + Spring Boot app..."
 
+      : "${out:=.}"  # Use current directory if $out is not set
+
       mkdir -p "$out"
       cd "$out"
       

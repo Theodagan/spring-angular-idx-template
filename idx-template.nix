@@ -122,17 +122,17 @@ EOF
     workspace = {
       onCreate = {
         install = ''
-          if [ -f ${backend_path}/pom.xml ]; then
-            cd ${backend_path}
+          if [ -f "${backend_path}/pom.xml" ]; then
+            cd "${backend_path}"
             if [ -d target ]; then
               echo "⏩ Backend already built, skipping mvn install."
             else
               mvn clean install -DskipTests
             fi
           fi
-
-          if [ -f ${frontend_path}/package.json ]; then
-            cd ${frontend_path}
+        
+          if [ -f "${frontend_path}/package.json" ]; then
+            cd "${frontend_path}"
             if [ -f package-lock.json ]; then
               npm ci
             else
@@ -140,7 +140,6 @@ EOF
             fi
           fi
         '';
-      };
 
       onStart = {
         runServer = "(cd ${backend_path} && mvn spring-boot:run) & cd ${frontend_path} && ng serve";

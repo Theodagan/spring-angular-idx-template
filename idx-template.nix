@@ -171,7 +171,7 @@ EOF
         command = [
           "sh"
           "-c"
-          "cd ${frontend_path} && ng serve --port $PORT --host 0.0.0.0"
+          "cd ${frontend_path} && ng serve --port 4200 --host 0.0.0.0"
         ];
       };
     };

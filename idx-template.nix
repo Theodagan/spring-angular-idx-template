@@ -73,7 +73,7 @@ in
       (
         cd "$BACKEND"
         spring init \
-          --dependencies=web,data-jpa,mysql, security \
+          --dependencies=web,data-jpa,mysql,security \
           --build=maven \
           --java-version=${java_version} \
           --package-name=com.example.demo \

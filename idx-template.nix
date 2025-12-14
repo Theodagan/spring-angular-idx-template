@@ -128,7 +128,7 @@ EOF
     cat <<EOF > .idx/dev.nix
 { pkgs, ... }:
 {
-  channel = "stable-24.05";
+  channel = "stable-25.11";
 
   packages = [
     pkgs.openjdk${java_version}

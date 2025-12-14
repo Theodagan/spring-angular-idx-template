@@ -17,7 +17,7 @@ in
 {
   packages = [
     pkgs.git
-    pkgs.nodejs_18
+    pkgs.nodejs_22
     pkgs.mysql
     pkgs.maven
     jdkPackage

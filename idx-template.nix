@@ -17,7 +17,7 @@ in
 {
   packages = [
     pkgs.git
-    pkgs.nodejs_20
+    pkgs.nodejs_22
     pkgs.mysql
     pkgs.maven
     jdkPackage
@@ -128,7 +128,7 @@ EOF
     cat <<EOF > .idx/dev.nix
 { pkgs, ... }:
 {
-  channel = "stable-23.11";
+  channel = "stable-24.05";
 
   packages = [
     pkgs.openjdk${java_version}
